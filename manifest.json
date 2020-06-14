@@ -1,0 +1,7 @@
+{
+  "name": "figma-open-graph",
+  "id": "854022491545832752",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
