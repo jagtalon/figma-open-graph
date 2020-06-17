@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/jagtalon/figma-open-graph/issues"
   },
-  "homepage": "https://github.com/jagtalon/figma-open-graph#readme"
+  "homepage": "https://github.com/jagtalon/figma-open-graph#readme",
+  "dependencies": {
+    "lit-html": "^1.2.1"
+  }
 }

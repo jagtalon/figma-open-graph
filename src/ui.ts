@@ -3,6 +3,7 @@
     It has access to all the browser APIs.
 */
 
+import {html, render} from '../node_modules/lit-html/lit-html.js';
 import './libs/figma-ds/figma-plugin-ds.css'
 import './libs/figma-ds/figma-plugin-ds.js'
 import './ui.css'
@@ -31,15 +32,19 @@ submitButton.addEventListener('click', () => {
         request.open('GET', pluginServer + crawlUrl.value);
         request.responseType = 'json';
         request.onload = () => {
+            window.parent.postMessage({pluginMessage: {type: 'resize', width: 450, height: 400}}, '*');
             renderElements(request.response);
         };
         request.send()
     }
 })
 
+const helloTemplate = (name) => html`<div>Hello ${name}!</div>`;
+
 // Display the data that we got.
 function renderElements(response) {
-    console.log(response);
+    let results = document.querySelector('.result');
+    render(helloTemplate('Steve'), results);
 }
 
 function resultElementHTML() {
