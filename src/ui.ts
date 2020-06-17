@@ -39,6 +39,7 @@ submitButton.addEventListener('click', () => {
     }
 })
 
+// Define the templates for displaying the data.
 const mainTemplate = (templates) => html`${templates}`;
 const textTemplate = (data) => html`<div class='text-data'>${data}</div>`;
 const imageTemplate = (data) => 
@@ -50,6 +51,10 @@ const imageTemplate = (data) =>
 function renderElements(response) {
     let container = document.querySelector('.result');
     let dataTemplates = [];
+
+    if (response.ogImage && response.ogImage.url) {
+        dataTemplates.push(imageTemplate(response.ogImage.url));
+    }
     
     if (response.ogSiteName) {
         dataTemplates.push(textTemplate(response.ogSiteName));
@@ -59,8 +64,12 @@ function renderElements(response) {
         dataTemplates.push(textTemplate(response.ogTitle));
     }
 
-    if (response.ogImage && response.ogImage.url) {
-        dataTemplates.push(imageTemplate(response.ogImage.url));
+    if (response.twitterSite) {
+        dataTemplates.push(textTemplate(response.twitterSite));
+    }
+
+    if(response.twitterDescription) {
+        dataTemplates.push(textTemplate(response.twitterDescription));
     }
 
     render(mainTemplate(dataTemplates), container);

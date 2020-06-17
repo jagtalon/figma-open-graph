@@ -11,6 +11,8 @@ body {
     padding: 1em;
 }
 
+/* Styles for the URL bar. */
+
 .url {
     display: flex;
 }
@@ -20,6 +22,7 @@ body {
     height: var(--input-height);
 }
 
+/* Styles for the example websites. */
 .examples {
     padding: 1em 0;
 }
@@ -37,9 +40,11 @@ body {
     filter: brightness(0.6);
 }
 
+/* Displaying the data from the API. */
 .result {
     display: flex;
     flex-direction: column;
+    padding-top: 1em;
 }
 
 .result > * {
@@ -56,4 +61,5 @@ body {
 
 .result .image-data img {
     width: 100%;
+    border-radius: var(--border-radius);
 }
