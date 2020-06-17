@@ -1,5 +1,5 @@
 {
-  "name": "figma-open-graph",
+  "name": "Open Graph Fetcher",
   "id": "854022491545832752",
   "api": "1.0.0",
   "main": "dist/code.js",

@@ -19,3 +19,6 @@ window.onmessage = async (event) => {
         request.send()
     }
 }
+
+let crawlUrl: HTMLInputElement = document.querySelector('.url');
+let submitButton: HTMLButtonElement = document.querySelector('.url button');
