@@ -18,7 +18,6 @@ body {
 .url input {
     margin-right: 1em;
     height: var(--input-height);
-    border-radius: var(--border-radius);
 }
 
 .examples {
@@ -36,4 +35,26 @@ body {
 
 .examples span:hover {
     filter: brightness(0.6);
+}
+
+table {
+    color:#333;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #dee2e6;
+}
+
+tr:nth-child(odd) {
+    background-color: rgba(0,0,0,.05);
+}
+
+td {
+    padding: .75rem;
+    font-size: .80rem;
+    border-top: 1px solid #dee2e6;
+}
+
+td:hover, td:focus {
+    color: #000;
+    cursor: pointer;
 }

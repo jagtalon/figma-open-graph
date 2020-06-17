@@ -16,9 +16,11 @@ let exampleTags = document.querySelectorAll('.examples span').forEach((example: 
     example.addEventListener('click', (event: MouseEvent) => {
         console.log(example.dataset.url);
         crawlUrl.value = example.dataset.url;
+        crawlUrl.focus();
     });
 });
 
+// Submit button
 submitButton.addEventListener('click', () => {
     var request = new XMLHttpRequest()
 
@@ -26,9 +28,18 @@ submitButton.addEventListener('click', () => {
         request.open('GET', serverUrl + crawlUrl.value);
         request.responseType = 'text';
         request.onload = () => {
-            window.parent.postMessage({pluginMessage: request.response}, '*')
+            renderElements(request.response);
         };
         request.send()
     }
 })
+
+// Display the data that we got.
+function renderElements(response) {
+    console.log(response);
+}
+
+function resultElementHTML() {
+
+}
 
