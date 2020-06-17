@@ -7,6 +7,6 @@
 figma.showUI(__html__);
 figma.ui.resize(450, 110);
 
-figma.ui.onmessage = async (msg) => {
-
+figma.ui.onmessage = async (message) => {
+  console.log(message);
 }
