@@ -14,7 +14,7 @@ window.onmessage = async (event) => {
         request.open('GET', 'http://localhost:8080/spotify.com')
         request.responseType = 'text'
         request.onload = () => {
-        window.parent.postMessage({pluginMessage: request.response}, '*')
+            window.parent.postMessage({pluginMessage: request.response}, '*')
         };
         request.send()
     }
@@ -22,3 +22,9 @@ window.onmessage = async (event) => {
 
 let crawlUrl: HTMLInputElement = document.querySelector('.url');
 let submitButton: HTMLButtonElement = document.querySelector('.url button');
+
+let exampleTags = document.querySelectorAll('.examples span').forEach((example: HTMLSpanElement) => {
+    example.addEventListener('click', (event: MouseEvent) => {
+        console.log(example.dataset.url);
+    });
+});
