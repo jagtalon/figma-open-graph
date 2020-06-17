@@ -28,7 +28,7 @@ let submitButton: HTMLButtonElement = document.querySelector('.url button');
 submitButton.addEventListener('click', () => {
     var request = new XMLHttpRequest()
 
-    if(crawlUrl.value.length > 0) {
+    if (crawlUrl.value.length > 0) {
         request.open('GET', pluginServer + crawlUrl.value);
         request.responseType = 'json';
         request.onload = () => {
@@ -39,15 +39,21 @@ submitButton.addEventListener('click', () => {
     }
 })
 
-const helloTemplate = (name) => html`<div>Hello ${name}!</div>`;
+const mainTemplate = (templates) => html`${templates}`;
+const textTemplate = (data) => html`<div class='text-data'>${data}</div>`;
+const imageTemplate = (data) => 
+    html`<div class='image-data'>
+            <img>${data}</img>
+        </div>`;
 
 // Display the data that we got.
 function renderElements(response) {
-    let results = document.querySelector('.result');
-    render(helloTemplate('Steve'), results);
+    let container = document.querySelector('.result');
+    let dataTemplates = [];
+    
+    if (response.ogTitle) {
+        dataTemplates.push(textTemplate(response.ogTitle));
+    }
+
+    render(mainTemplate(dataTemplates), container);
 }
-
-function resultElementHTML() {
-
-}
-
