@@ -1,10 +1,10 @@
 :root {
     --input-height: 32px;
     --border-radius: 5px;
+    --font-size: .9em;
 
     --color-tags: #999;
     --border-color-tags: #eee;
-    --font-size-tags: .9em;
 }
 
 body {
@@ -25,7 +25,7 @@ body {
 }
 
 .examples span {
-    font-size: var(--font-size-tags);
+    font-size: var(--font-size);
     padding: .5em;
     border: 1px solid var(--border-color-tags);
     border-radius: var(--border-radius);
@@ -37,24 +37,23 @@ body {
     filter: brightness(0.6);
 }
 
-table {
-    color:#333;
+.result {
+    display: flex;
+    flex-direction: column;
+}
+
+.result > * {
+    margin-bottom: .5em;
+}
+
+.result .text-data {
+    font-size: var(--font-size);
+    padding: .5em;
+    border: 1px solid #CCC;
+    border-radius: var(--border-radius);
+    color: #666;
+}
+
+.result .image-data img {
     width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #dee2e6;
-}
-
-tr:nth-child(odd) {
-    background-color: rgba(0,0,0,.05);
-}
-
-td {
-    padding: .75rem;
-    font-size: .80rem;
-    border-top: 1px solid #dee2e6;
-}
-
-td:hover, td:focus {
-    color: #000;
-    cursor: pointer;
 }

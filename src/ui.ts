@@ -43,7 +43,7 @@ const mainTemplate = (templates) => html`${templates}`;
 const textTemplate = (data) => html`<div class='text-data'>${data}</div>`;
 const imageTemplate = (data) => 
     html`<div class='image-data'>
-            <img>${data}</img>
+            <img src='${data}'></img>
         </div>`;
 
 // Display the data that we got.
@@ -51,8 +51,16 @@ function renderElements(response) {
     let container = document.querySelector('.result');
     let dataTemplates = [];
     
+    if (response.ogSiteName) {
+        dataTemplates.push(textTemplate(response.ogSiteName));
+    }
+
     if (response.ogTitle) {
         dataTemplates.push(textTemplate(response.ogTitle));
+    }
+
+    if (response.ogImage && response.ogImage.url) {
+        dataTemplates.push(imageTemplate(response.ogImage.url));
     }
 
     render(mainTemplate(dataTemplates), container);
