@@ -3,7 +3,7 @@
     It has access to all the browser APIs.
 */
 
-import {html, render} from '../node_modules/lit-html/lit-html.js';
+import {html, render, TemplateResult} from '../node_modules/lit-html/lit-html.js';
 import './libs/figma-ds/figma-plugin-ds.css'
 import './libs/figma-ds/figma-plugin-ds.js'
 import './ui.css'
@@ -39,18 +39,44 @@ submitButton.addEventListener('click', () => {
     }
 })
 
+async function encode(canvas, ctx, imageData) {
+    ctx.putImageData(imageData, 0, 0)
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(new Uint8Array(reader.result))
+        reader.onerror = () => reject(new Error('Could not read from blob'))
+        reader.readAsArrayBuffer(blob)
+      })
+    })
+  }
+
+function sendImage() {
+    let canvas = document.createElement('canvas');
+    canvas.width = this.width;
+    canvas.height = this.height;
+
+    let context = canvas.getContext("2d");
+    context.drawImage(this, 0, 0);
+
+    let imageData = context.getImageData(0, 0, this.width, this.height);
+    let encodedImage = encode(canvas, context, imageData);
+
+    console.log(encodedImage);
+}
+
 // Define the templates for displaying the data.
-const mainTemplate = (templates) => html`${templates}`;
-const textTemplate = (data) => html`<div class='text-data'>${data}</div>`;
-const imageTemplate = (data) => 
+const mainTemplate = (templates: Array<TemplateResult>) => html`${templates}`;
+const textTemplate = (data: string) => html`<div class='text-data'>${data}</div>`;
+const imageTemplate = (data: string) => 
     html`<div class='image-data'>
-            <img src='${data}'></img>
-        </div>`;
+        <img src='${data}' @click="${sendImage}"></img>
+    </div>`;
 
 // Display the data that we got.
 function renderElements(response) {
     let container = document.querySelector('.result');
-    let dataTemplates = [];
+    let dataTemplates: Array<TemplateResult> = [];
 
     if (response.ogImage && response.ogImage.url) {
         dataTemplates.push(imageTemplate(response.ogImage.url));
