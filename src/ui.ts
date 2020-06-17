@@ -20,11 +20,12 @@ window.onmessage = async (event) => {
     }
 }
 
-let crawlUrl: HTMLInputElement = document.querySelector('.url');
+let crawlUrl: HTMLInputElement = document.querySelector('.url input');
 let submitButton: HTMLButtonElement = document.querySelector('.url button');
 
 let exampleTags = document.querySelectorAll('.examples span').forEach((example: HTMLSpanElement) => {
     example.addEventListener('click', (event: MouseEvent) => {
         console.log(example.dataset.url);
+        crawlUrl.value = example.dataset.url;
     });
 });
