@@ -17,10 +17,13 @@ figma.ui.onmessage = async (message) => {
     const bytes: Uint8Array = message.bytes;
 
     // See if we're selecting anyting at all.
+    // If not, we put the image in ourselves.
     if (figma.currentPage.selection.length > 0) {
       // See if any of them have fills.
       figma.currentPage.selection.map(selected => canInsertImage(selected, bytes))
     } else {
+      // Create a rectangle with the dimensions of our image
+      // Then we fill this rectangle with bytes from the image.
       const rectangle = figma.createRectangle();
       rectangle.x = figma.viewport.center.x;
       rectangle.y = figma.viewport.center.y;

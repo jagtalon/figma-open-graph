@@ -33,7 +33,12 @@ submitButton.addEventListener('click', () => {
         request.open('GET', pluginServer + crawlUrl.value);
         request.responseType = 'json';
         request.onload = () => {
-            window.parent.postMessage({pluginMessage: {type: 'resize', width: 450, height: 400}}, '*');
+            window.parent.postMessage({
+                pluginMessage: {
+                    type: 'resize', 
+                    width: 450, 
+                    height: 400}
+            }, '*');
             cachedResponse = request.response;
             renderElements(request.response, {
                 showImage: true
@@ -69,7 +74,13 @@ async function sendImage() {
     let imageData = context.getImageData(0, 0, this.naturalWidth, this.naturalHeight);
     let encodedImage = await encode(canvas, context, imageData);
 
-    window.parent.postMessage({pluginMessage: {type: 'import-image', bytes: encodedImage, width: this.naturalWidth, height: this.naturalHeight}}, '*');
+    window.parent.postMessage({
+        pluginMessage: {
+            type: 'import-image', 
+            bytes: encodedImage, 
+            width: this.naturalWidth, 
+            height: this.naturalHeight}
+    }, '*');
 }
 
 // Re-render the elements but don't show the image.
