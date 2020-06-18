@@ -20,6 +20,13 @@ figma.ui.onmessage = async (message) => {
     if (figma.currentPage.selection.length > 0) {
       // See if any of them have fills.
       figma.currentPage.selection.map(selected => canInsertImage(selected, bytes))
+    } else {
+      const rectangle = figma.createRectangle();
+      rectangle.x = figma.viewport.center.x;
+      rectangle.y = figma.viewport.center.y;
+      rectangle.resizeWithoutConstraints(message.width, message.height);
+
+      canInsertImage(rectangle, bytes);
     }
   }
 }
@@ -58,12 +65,12 @@ async function insertImage(paint, bytes) {
     newPaint.imageHash = figma.createImage(bytes).hash;
 
     // Convert a SOLID into an IMAGE
-    if (paint.type === 'SOLID') {
+    if (newPaint.type === 'SOLID') {
       delete newPaint.color;
-
       newPaint.type = 'IMAGE';
       newPaint.scaleMode = 'FILL';
     }
+
     return newPaint;
   }
 }

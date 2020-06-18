@@ -9,7 +9,7 @@ import './libs/figma-ds/figma-plugin-ds.js'
 import './ui.css'
 
 const pluginServer = 'http://localhost:8080/';
-let globalResponse = {};
+let cachedResponse = {};
 
 // Example buttons
 // These provide example URLs that the user can use to try out the plugin.
@@ -34,7 +34,7 @@ submitButton.addEventListener('click', () => {
         request.responseType = 'json';
         request.onload = () => {
             window.parent.postMessage({pluginMessage: {type: 'resize', width: 450, height: 400}}, '*');
-            globalResponse = request.response;
+            cachedResponse = request.response;
             renderElements(request.response, {
                 showImage: true
             });
@@ -45,14 +45,14 @@ submitButton.addEventListener('click', () => {
 
 
 // Encode the ImageData into Uint8Array
-async function encode(canvas, ctx, imageData) {
-    ctx.putImageData(imageData, 0, 0)
+async function encode(canvas, context, imageData) {
+    context.putImageData(imageData, 0, 0)
     return await new Promise((resolve, reject) => {
         canvas.toBlob(blob => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(new Uint8Array(reader.result))
-        reader.onerror = () => reject(new Error('Could not read from blob'))
-        reader.readAsArrayBuffer(blob)
+            const reader = new FileReader()
+            reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer))
+            reader.onerror = () => reject(new Error('Could not read from blob'))
+            reader.readAsArrayBuffer(blob)
         })
     })
 }
@@ -69,12 +69,12 @@ async function sendImage() {
     let imageData = context.getImageData(0, 0, this.naturalWidth, this.naturalHeight);
     let encodedImage = await encode(canvas, context, imageData);
 
-    window.parent.postMessage({pluginMessage: {type: 'import-image', bytes: encodedImage}}, '*');
+    window.parent.postMessage({pluginMessage: {type: 'import-image', bytes: encodedImage, width: this.naturalWidth, height: this.naturalHeight}}, '*');
 }
 
 // Re-render the elements but don't show the image.
 function noImage() {
-    renderElements(globalResponse, {
+    renderElements(cachedResponse, {
         showImage: false
     })
 }
