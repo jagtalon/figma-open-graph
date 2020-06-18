@@ -60,13 +60,13 @@ async function encode(canvas, ctx, imageData) {
 // Send the image to code.ts
 async function sendImage() {
     let canvas = document.createElement('canvas');
-    canvas.width = this.width;
-    canvas.height = this.height;
+    canvas.width = this.naturalWidth;
+    canvas.height = this.naturalHeight;
 
     let context = canvas.getContext("2d");
     context.drawImage(this, 0, 0);
 
-    let imageData = context.getImageData(0, 0, this.width, this.height);
+    let imageData = context.getImageData(0, 0, this.naturalWidth, this.naturalHeight);
     let encodedImage = await encode(canvas, context, imageData);
 
     window.parent.postMessage({pluginMessage: {type: 'import-image', bytes: encodedImage}}, '*');

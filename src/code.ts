@@ -18,7 +18,6 @@ figma.ui.onmessage = async (message) => {
 
     // See if we're selecting anyting at all.
     if (figma.currentPage.selection.length > 0) {
-      console.log("We have things selected.")
       // See if any of them have fills.
       figma.currentPage.selection.map(selected => canInsertImage(selected, bytes))
     }
@@ -53,11 +52,18 @@ async function canInsertImage(selected, bytes) {
 }
 
 async function insertImage(paint, bytes) {
-  console.log(paint);
-  if (paint.type === 'IMAGE') {
+  if (paint.type === 'IMAGE' || paint.type === 'SOLID') {
     // Create a new paint for the new image.
     const newPaint = JSON.parse(JSON.stringify(paint));
     newPaint.imageHash = figma.createImage(bytes).hash;
+
+    // Convert a SOLID into an IMAGE
+    if (paint.type === 'SOLID') {
+      delete newPaint.color;
+
+      newPaint.type = 'IMAGE';
+      newPaint.scaleMode = 'FILL';
+    }
     return newPaint;
   }
 }
