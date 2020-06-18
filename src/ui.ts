@@ -9,6 +9,7 @@ import './libs/figma-ds/figma-plugin-ds.js'
 import './ui.css'
 
 const pluginServer = 'http://localhost:8080/';
+let globalResponse = {};
 
 // Example buttons
 // These provide example URLs that the user can use to try out the plugin.
@@ -33,25 +34,31 @@ submitButton.addEventListener('click', () => {
         request.responseType = 'json';
         request.onload = () => {
             window.parent.postMessage({pluginMessage: {type: 'resize', width: 450, height: 400}}, '*');
-            renderElements(request.response);
+            globalResponse = request.response;
+            renderElements(request.response, {
+                showImage: true
+            });
         };
         request.send()
     }
 })
 
+
+// Encode the ImageData into Uint8Array
 async function encode(canvas, ctx, imageData) {
     ctx.putImageData(imageData, 0, 0)
     return await new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
+        canvas.toBlob(blob => {
         const reader = new FileReader()
         reader.onload = () => resolve(new Uint8Array(reader.result))
         reader.onerror = () => reject(new Error('Could not read from blob'))
         reader.readAsArrayBuffer(blob)
-      })
+        })
     })
-  }
+}
 
-function sendImage() {
+// Send the image to code.ts
+async function sendImage() {
     let canvas = document.createElement('canvas');
     canvas.width = this.width;
     canvas.height = this.height;
@@ -60,9 +67,16 @@ function sendImage() {
     context.drawImage(this, 0, 0);
 
     let imageData = context.getImageData(0, 0, this.width, this.height);
-    let encodedImage = encode(canvas, context, imageData);
+    let encodedImage = await encode(canvas, context, imageData);
 
-    console.log(encodedImage);
+    window.parent.postMessage({pluginMessage: {type: 'import-image', bytes: encodedImage}}, '*');
+}
+
+// Re-render the elements but don't show the image.
+function noImage() {
+    renderElements(globalResponse, {
+        showImage: false
+    })
 }
 
 // Define the templates for displaying the data.
@@ -70,15 +84,15 @@ const mainTemplate = (templates: Array<TemplateResult>) => html`${templates}`;
 const textTemplate = (data: string) => html`<div class='text-data'>${data}</div>`;
 const imageTemplate = (data: string) => 
     html`<div class='image-data'>
-        <img src='${data}' @click="${sendImage}"></img>
-    </div>`;
+            <img src='${data}' @click="${sendImage}" crossorigin='' @error="${noImage}"></img>
+         </div>`;
 
 // Display the data that we got.
-function renderElements(response) {
+function renderElements(response, options) {
     let container = document.querySelector('.result');
     let dataTemplates: Array<TemplateResult> = [];
 
-    if (response.ogImage && response.ogImage.url) {
+    if (response.ogImage && response.ogImage.url && options.showImage) {
         dataTemplates.push(imageTemplate(response.ogImage.url));
     }
     

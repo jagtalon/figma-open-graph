@@ -8,7 +8,11 @@ figma.showUI(__html__);
 figma.ui.resize(450, 110);
 
 figma.ui.onmessage = async (message) => {
-  if(message.type === 'resize') {
+  if (message.type === 'resize') {
     figma.ui.resize(message.width, message.height);
+  }
+
+  if (message.type === 'import-image') {
+    console.log(message.bytes);
   }
 }
