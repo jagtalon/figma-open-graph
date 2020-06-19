@@ -30,6 +30,7 @@ figma.ui.onmessage = async (message) => {
       rectangle.resizeWithoutConstraints(message.width, message.height);
 
       canInsertImage(rectangle, bytes);
+      figma.viewport.scrollAndZoomIntoView([rectangle]);
     }
   }
 }

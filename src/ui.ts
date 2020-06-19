@@ -102,10 +102,6 @@ const imageTemplate = (data: string) =>
 function renderElements(response, options) {
     let container = document.querySelector('.result');
     let dataTemplates: Array<TemplateResult> = [];
-
-    if (response.ogImage && response.ogImage.url && options.showImage) {
-        dataTemplates.push(imageTemplate(response.ogImage.url));
-    }
     
     if (response.ogSiteName) {
         dataTemplates.push(textTemplate(response.ogSiteName));
@@ -121,6 +117,10 @@ function renderElements(response, options) {
 
     if(response.twitterDescription) {
         dataTemplates.push(textTemplate(response.twitterDescription));
+    }
+
+    if (response.ogImage && response.ogImage.url && options.showImage) {
+        dataTemplates.push(imageTemplate(response.ogImage.url));
     }
 
     render(mainTemplate(dataTemplates), container);

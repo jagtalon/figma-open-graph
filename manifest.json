@@ -1,5 +1,5 @@
 {
-  "name": "Open Graph Fetcher",
+  "name": "Open Graph Cards",
   "id": "854022491545832752",
   "api": "1.0.0",
   "main": "dist/code.js",
