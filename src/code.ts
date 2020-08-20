@@ -4,33 +4,35 @@
   have access to the Figma document itself and Figma APIs.
 */
 
-figma.showUI(__html__);
-figma.ui.resize(460, 110);
+figma.showUI(__html__)
+figma.ui.resize(460, 110)
 
 // These are the messages received from ui.ts
 figma.ui.onmessage = async (message) => {
   if (message.type === 'resize') {
-    figma.ui.resize(message.width, message.height);
+    figma.ui.resize(message.width, message.height)
   }
 
   if (message.type === 'import-image') {
-    const bytes: Uint8Array = message.bytes;
+    const bytes: Uint8Array = message.bytes
 
     // See if we're selecting anyting at all.
     // If not, we put the image in ourselves.
     if (figma.currentPage.selection.length > 0) {
       // See if any of them have fills.
-      figma.currentPage.selection.map(selected => canInsertImage(selected, bytes))
+      figma.currentPage.selection.map((selected) =>
+        canInsertImage(selected, bytes),
+      )
     } else {
       // Create a rectangle with the dimensions of our image
       // Then we fill this rectangle with bytes from the image.
-      const rectangle = figma.createRectangle();
-      rectangle.x = figma.viewport.center.x;
-      rectangle.y = figma.viewport.center.y;
-      rectangle.resizeWithoutConstraints(message.width, message.height);
+      const rectangle = figma.createRectangle()
+      rectangle.x = figma.viewport.center.x
+      rectangle.y = figma.viewport.center.y
+      rectangle.resizeWithoutConstraints(message.width, message.height)
 
-      canInsertImage(rectangle, bytes);
-      figma.viewport.scrollAndZoomIntoView([rectangle]);
+      canInsertImage(rectangle, bytes)
+      figma.viewport.scrollAndZoomIntoView([rectangle])
     }
   }
 }
@@ -65,16 +67,16 @@ async function canInsertImage(selected, bytes) {
 async function insertImage(paint, bytes) {
   if (paint.type === 'IMAGE' || paint.type === 'SOLID') {
     // Create a new paint for the new image.
-    const newPaint = JSON.parse(JSON.stringify(paint));
-    newPaint.imageHash = figma.createImage(bytes).hash;
+    const newPaint = JSON.parse(JSON.stringify(paint))
+    newPaint.imageHash = figma.createImage(bytes).hash
 
     // Convert a SOLID into an IMAGE
     if (newPaint.type === 'SOLID') {
-      delete newPaint.color;
-      newPaint.type = 'IMAGE';
-      newPaint.scaleMode = 'FILL';
+      delete newPaint.color
+      newPaint.type = 'IMAGE'
+      newPaint.scaleMode = 'FILL'
     }
 
-    return newPaint;
+    return newPaint
   }
 }
