@@ -1,5 +1,5 @@
 # Figma Open Graph Plugin
-A Figma plugin that pulls in Open Graph information from websites.
+A Figma plugin that pulls in Open Graph information from websites. Requires https://github.com/jagtalon/figma-open-graph-server
 
 ![Screenshot of the Figma Plugin](images/Screenshot.png)
 
