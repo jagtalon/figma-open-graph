@@ -9,10 +9,12 @@ figma.ui.resize(460, 110)
 
 // These are the messages received from ui.ts
 figma.ui.onmessage = async (message) => {
+  // Resize the window.
   if (message.type === 'resize') {
     figma.ui.resize(message.width, message.height)
   }
 
+  // Import the external image to Figma.
   if (message.type === 'import-image') {
     const bytes: Uint8Array = message.bytes
 
@@ -34,6 +36,10 @@ figma.ui.onmessage = async (message) => {
       canInsertImage(rectangle, bytes)
       figma.viewport.scrollAndZoomIntoView([rectangle])
     }
+  }
+
+  if (message.type === 'notification') {
+    figma.notify(message.message, {timeout: 5});
   }
 }
 
@@ -64,6 +70,7 @@ async function canInsertImage(selected, bytes) {
   }
 }
 
+// Insert the image into a shape.
 async function insertImage(paint, bytes) {
   if (paint.type === 'IMAGE' || paint.type === 'SOLID') {
     // Create a new paint for the new image.

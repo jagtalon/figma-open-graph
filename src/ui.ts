@@ -22,7 +22,6 @@ let exampleTags = document
   .querySelectorAll('.examples span')
   .forEach((example: HTMLSpanElement) => {
     example.addEventListener('click', (event: MouseEvent) => {
-      console.log(example.dataset.url)
       crawlUrl.value = example.dataset.url
       crawlUrl.focus()
     })
@@ -72,7 +71,7 @@ async function encode(canvas, context, imageData) {
   })
 }
 
-// Send the image to code.ts
+// Encode the image then send it to Figma.
 async function sendImage() {
   let canvas = document.createElement('canvas')
   canvas.width = this.naturalWidth
@@ -102,7 +101,7 @@ async function sendImage() {
   )
 }
 
-// Re-render the elements but don't show the image.
+// Re-render the elements without showing the images.
 function noImage() {
   renderElements(cachedResponse, {
     showImage: false,
@@ -112,7 +111,7 @@ function noImage() {
 // Define the templates for displaying the data.
 const mainTemplate = (templates: Array<TemplateResult>) => html`${templates}`
 const textTemplate = (data: string) =>
-  html`<div class="text-data">${data}</div>`
+  html`<div class="text-data" @click="${copyContent}">${data}</div>`
 const imageTemplate = (data: string) =>
   html`<div class='image-data'>
             <img src='${data}' @click="${sendImage}" crossorigin='' @error="${noImage}"></img>
@@ -151,8 +150,25 @@ async function renderElements(response, options) {
       }
     } catch (err) {
       dataTemplates.push(imageTemplate(ogImage))
+      console.error(err)
     }
   }
 
   render(mainTemplate(dataTemplates), container)
+}
+
+// Select the text and copy it to the clipboard.
+// Snippet is from https://stackoverflow.com/a/6150060
+function copyContent() {
+  let range: Range = document.createRange();
+  range.selectNodeContents(this);
+  
+  let sel: Selection = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  document.execCommand('copy');
+
+  // Tell the plugin about it.
+  parent.postMessage({pluginMessage: {type: 'notification', message: 'Copied Text'}}, '*');
 }
