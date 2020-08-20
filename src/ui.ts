@@ -8,7 +8,7 @@ import './libs/figma-ds/figma-plugin-ds.css'
 import './libs/figma-ds/figma-plugin-ds.js'
 import './ui.css'
 
-const pluginServer = 'http://localhost:8080/';
+const pluginServer = 'https://figma-open-graph-server.jagtalon.workers.dev/';
 let cachedResponse = {};
 
 // Example buttons
@@ -30,13 +30,13 @@ submitButton.addEventListener('click', () => {
     var request = new XMLHttpRequest()
 
     if (crawlUrl.value.length > 0) {
-        request.open('GET', pluginServer + crawlUrl.value);
+        request.open('GET', `${pluginServer}?url=${crawlUrl.value}`);
         request.responseType = 'json';
         request.onload = () => {
             window.parent.postMessage({
                 pluginMessage: {
                     type: 'resize', 
-                    width: 450, 
+                    width: 460, 
                     height: 400}
             }, '*');
             cachedResponse = request.response;
@@ -102,25 +102,26 @@ const imageTemplate = (data: string) =>
 function renderElements(response, options) {
     let container = document.querySelector('.result');
     let dataTemplates: Array<TemplateResult> = [];
+    let result = response.result || {};
     
-    if (response.ogSiteName) {
-        dataTemplates.push(textTemplate(response.ogSiteName));
+    if (result['og:site_name']) {
+        dataTemplates.push(textTemplate(result['og:site_name']));
     }
 
-    if (response.ogTitle) {
-        dataTemplates.push(textTemplate(response.ogTitle));
+    if (result['og:title']) {
+        dataTemplates.push(textTemplate(result['og:title']));
     }
 
-    if (response.twitterSite) {
-        dataTemplates.push(textTemplate(response.twitterSite));
+    if (result['twitter:site']) {
+        dataTemplates.push(textTemplate(result['twitter:site']));
     }
 
-    if(response.twitterDescription) {
-        dataTemplates.push(textTemplate(response.twitterDescription));
+    if(result['twitter:description']) {
+        dataTemplates.push(textTemplate(result['twitter:description']);
     }
 
-    if (response.ogImage && response.ogImage.url && options.showImage) {
-        dataTemplates.push(imageTemplate(response.ogImage.url));
+    if ((result['og:image'] || result['twitter:image']) && options.showImage) {
+        dataTemplates.push(imageTemplate(result['og:image'] || result['twitter:image']));
     }
 
     render(mainTemplate(dataTemplates), container);

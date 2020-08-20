@@ -5,7 +5,7 @@
 */
 
 figma.showUI(__html__);
-figma.ui.resize(450, 110);
+figma.ui.resize(470, 110);
 
 // These are the messages received from ui.ts
 figma.ui.onmessage = async (message) => {
