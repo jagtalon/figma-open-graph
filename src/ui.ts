@@ -119,7 +119,7 @@ const imageTemplate = (data: string) =>
          </div>`
 
 // Display the data that we got.
-function renderElements(response, options) {
+async function renderElements(response, options) {
   let container = document.querySelector('.result')
   let dataTemplates: Array<TemplateResult> = []
   let result = response.result || {}
@@ -140,10 +140,18 @@ function renderElements(response, options) {
     dataTemplates.push(textTemplate(result['twitter:description']))
   }
 
-  if ((result['og:image'] || result['twitter:image']) && options.showImage) {
-    dataTemplates.push(
-      imageTemplate(result['og:image'] || result['twitter:image']),
-    )
+  let ogImage = result['og:image'] || result['twitter:image']
+  if (ogImage && options.showImage) {
+    try {
+      let proxyImageResponse = await fetch(`${pluginServer}?url=${ogImage}`)
+
+      if (proxyImageResponse.ok) {
+        let proxyImage = await proxyImageResponse.json()
+        dataTemplates.push(imageTemplate(proxyImage.result))
+      }
+    } catch (err) {
+      dataTemplates.push(imageTemplate(ogImage))
+    }
   }
 
   render(mainTemplate(dataTemplates), container)
